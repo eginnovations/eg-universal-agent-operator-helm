@@ -20,6 +20,7 @@ The eG Universal Agent Operator helm chart adds eG Universal Agent Operator to c
 ## Installing from Artifact Hub
 
 The Helm chart for eG-Agent can be found in Artifact Hub under below URL.
+
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/eginnovations)](https://artifacthub.io/packages/search?repo=eginnovations)  
   
 **Step 1 -** Adding the Repository. Run command.  
