@@ -25,7 +25,7 @@ entries:
       name: eG Innovations
     name: eg-universal-agent-operator
     sources:
-    - https://github.com/eginnovations/eg-universal-agent-operator-helm
+    - https://eginnovations.github.io/eg-universal-agent-operator-helm
     type: application
     urls:
     - https://eginnovations.github.io/eg-universal-agent-operator-helm/repos/stable/eg-universal-agent-operator-0.0.1.tgz
