@@ -3,9 +3,14 @@ entries:
   eg-universal-agent-operator:
   - apiVersion: v2
     appVersion: 0.0.8
-    created: "2024-07-26T19:23:31.1039868+05:30"
-    description: The eG Innovations Universal Agent Operator Helm Chart for Kubernetes and OpenShift monitoring
-    digest: aae92311b4359c2342a9972f6dc9ee0bcdd926f87b26b06cf415d3236a133ac8
+    created: "2024-09-25T17:19:12.6676895+05:30"
+    dependencies:
+    - condition: certManager
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.15.3
+    description: A Helm chart for Kubernetes installation of eG Universal agent Operator
+    digest: 7fdbb779d9e840ef487c6b40f2d463d2acc31541cf17873bb6fe19e2069b8597
     home: https://www.eginnovations.com/
     icon: https://s.gravatar.com/avatar/9a5699e3ad66f788e8f29d32e0066e60?s=80
     keywords:
@@ -28,6 +33,40 @@ entries:
     - https://eginnovations.github.io/eg-universal-agent-operator-helm
     type: application
     urls:
-    - https://eginnovations.github.io/eg-universal-agent-operator-helm/repos/stable/eg-universal-agent-operator-0.0.1.tgz
+    - eg-universal-agent-operator-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 0.0.8
+    created: "2024-09-25T17:19:12.6620106+05:30"
+    dependencies:
+    - condition: certManager
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.15.1
+    description: A Helm chart for Kubernetes installation of eG Universal agent Operator
+    digest: c72f7fb624441e5e0d2def13b38e263f72362d9dba46460fd3a006070819eaa5
+    home: https://www.eginnovations.com/
+    icon: https://s.gravatar.com/avatar/9a5699e3ad66f788e8f29d32e0066e60?s=80
+    keywords:
+    - eginnovations
+    - egagent
+    - cluster
+    - kubernetes
+    - openshift
+    - monitoring
+    - pod
+    - deployment
+    - apm
+    - k8s
+    - ocp
+    maintainers:
+    - email: devops@eginnovations.com
+      name: eG Innovations
+    name: eg-universal-agent-operator
+    sources:
+    - https://eginnovations.github.io/eg-universal-agent-operator-helm
+    type: application
+    urls:
+    - eg-universal-agent-operator-0.0.1.tgz
     version: 0.0.1
-generated: "2024-07-26T19:23:31.1039868+05:30"
+generated: "2024-09-25T17:19:12.653561+05:30"
