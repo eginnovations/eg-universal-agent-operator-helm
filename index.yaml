@@ -2,8 +2,42 @@ apiVersion: v1
 entries:
   eg-universal-agent-operator:
   - apiVersion: v2
+    appVersion: 0.0.9
+    created: "2024-12-19T23:44:54.9048589+05:30"
+    dependencies:
+    - condition: certManager
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.16.2
+    description: A Helm chart for Kubernetes installation of eG Universal agent Operator
+    digest: ab91acea4d32f224254f9d79497218c277f38f5107f0e2223689021ffdb0f8a0
+    home: https://www.eginnovations.com/
+    icon: https://s.gravatar.com/avatar/9a5699e3ad66f788e8f29d32e0066e60?s=80
+    keywords:
+    - eginnovations
+    - egagent
+    - cluster
+    - kubernetes
+    - openshift
+    - monitoring
+    - pod
+    - deployment
+    - apm
+    - k8s
+    - ocp
+    maintainers:
+    - email: devops@eginnovations.com
+      name: eG Innovations
+    name: eg-universal-agent-operator
+    sources:
+    - https://eginnovations.github.io/eg-universal-agent-operator-helm
+    type: application
+    urls:
+    - https://eginnovations.github.io/eg-universal-agent-operator-helm/repos/stable/eg-universal-agent-operator-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
     appVersion: 0.0.8
-    created: "2024-09-25T17:19:12.6676895+05:30"
+    created: "2024-12-19T23:44:54.8967628+05:30"
     dependencies:
     - condition: certManager
       name: cert-manager
@@ -33,11 +67,11 @@ entries:
     - https://eginnovations.github.io/eg-universal-agent-operator-helm
     type: application
     urls:
-    - https://eginnovations.github.io/eg-universal-agent-operator-helm/repos/stable/eg-universal-agent-operator-0.0.2.tgz
+    - eg-universal-agent-operator-0.0.2.tgz
     version: 0.0.2
   - apiVersion: v2
     appVersion: 0.0.8
-    created: "2024-09-25T17:19:12.6620106+05:30"
+    created: "2024-12-19T23:44:54.8882047+05:30"
     dependencies:
     - condition: certManager
       name: cert-manager
@@ -67,6 +101,6 @@ entries:
     - https://eginnovations.github.io/eg-universal-agent-operator-helm
     type: application
     urls:
-    - https://eginnovations.github.io/eg-universal-agent-operator-helm/repos/stable/eg-universal-agent-operator-0.0.1.tgz
+    - eg-universal-agent-operator-0.0.1.tgz
     version: 0.0.1
-generated: "2024-09-25T17:19:12.653561+05:30"
+generated: "2024-12-19T23:44:54.8772912+05:30"

@@ -6,13 +6,7 @@ imageOperator:
   registry: docker.io
   repository: eginnovations/universal-agent-operator
   pullPolicy: IfNotPresent
-  tag: "0.0.8"
-
-imageProxy:
-  registry: gcr.io
-  repository: kubebuilder/kube-rbac-proxy
-  pullPolicy: IfNotPresent
-  tag: "v0.16.0"
+  tag: "0.0.9"
 
 clusterType:
 

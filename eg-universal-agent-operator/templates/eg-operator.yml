@@ -5,7 +5,7 @@ metadata:
     "meta.helm.sh/release-name": "eg-universal-agent-operator"
     "meta.helm.sh/release-namespace": "egagent"
   labels:
-    app.kubernetes.io/component: manager
+    app.kubernetes.io/component: manage
     app.kubernetes.io/created-by: eginnovations-operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: namespace
@@ -20,7 +20,7 @@ metadata:
     meta.helm.sh/release-name: "eg-universal-agent-operator"
     meta.helm.sh/release-namespace: "egagent"
     cert-manager.io/inject-ca-from: egagent/eginnovations-operator-serving-cert
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
   name: eguniversalagents.eginnovations.com
 spec:
   conversion:
@@ -2053,13 +2053,337 @@ spec:
                 properties:
                   apm:
                     properties:
+                      apmProfiling:
+                        properties:
+                          config:
+                            properties:
+                              egBtmSetLabel:
+                                type: string
+                              env:
+                                items:
+                                  description: EnvVar represents an environment variable
+                                    present in a Container.
+                                  properties:
+                                    name:
+                                      description: Name of the environment variable.
+                                        Must be a C_IDENTIFIER.
+                                      type: string
+                                    value:
+                                      description: |-
+                                        Variable references $(VAR_NAME) are expanded
+                                        using the previously defined environment variables in the container and
+                                        any service environment variables. If a variable cannot be resolved,
+                                        the reference in the input string will be unchanged. Double $$ are reduced
+                                        to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+                                        "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+                                        Escaped references will never be expanded, regardless of whether the variable
+                                        exists or not.
+                                        Defaults to "".
+                                      type: string
+                                    valueFrom:
+                                      description: Source for the environment variable's
+                                        value. Cannot be used if value is not empty.
+                                      properties:
+                                        configMapKeyRef:
+                                          description: Selects a key of a ConfigMap.
+                                          properties:
+                                            key:
+                                              description: The key to select.
+                                              type: string
+                                            name:
+                                              default: ""
+                                              description: |-
+                                                Name of the referent.
+                                                This field is effectively required, but due to backwards compatibility is
+                                                allowed to be empty. Instances of this type with an empty value here are
+                                                almost certainly wrong.
+                                                TODO: Add other useful fields. apiVersion, kind, uid?
+                                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                                TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+                                              type: string
+                                            optional:
+                                              description: Specify whether the ConfigMap
+                                                or its key must be defined
+                                              type: boolean
+                                          required:
+                                          - key
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        fieldRef:
+                                          description: |-
+                                            Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+                                            spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+                                          properties:
+                                            apiVersion:
+                                              description: Version of the schema the
+                                                FieldPath is written in terms of,
+                                                defaults to "v1".
+                                              type: string
+                                            fieldPath:
+                                              description: Path of the field to select
+                                                in the specified API version.
+                                              type: string
+                                          required:
+                                          - fieldPath
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        resourceFieldRef:
+                                          description: |-
+                                            Selects a resource of the container: only resources limits and requests
+                                            (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+                                          properties:
+                                            containerName:
+                                              description: 'Container name: required
+                                                for volumes, optional for env vars'
+                                              type: string
+                                            divisor:
+                                              anyOf:
+                                              - type: integer
+                                              - type: string
+                                              description: Specifies the output format
+                                                of the exposed resources, defaults
+                                                to "1"
+                                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                              x-kubernetes-int-or-string: true
+                                            resource:
+                                              description: 'Required: resource to
+                                                select'
+                                              type: string
+                                          required:
+                                          - resource
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        secretKeyRef:
+                                          description: Selects a key of a secret in
+                                            the pod's namespace
+                                          properties:
+                                            key:
+                                              description: The key of the secret to
+                                                select from.  Must be a valid secret
+                                                key.
+                                              type: string
+                                            name:
+                                              default: ""
+                                              description: |-
+                                                Name of the referent.
+                                                This field is effectively required, but due to backwards compatibility is
+                                                allowed to be empty. Instances of this type with an empty value here are
+                                                almost certainly wrong.
+                                                TODO: Add other useful fields. apiVersion, kind, uid?
+                                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                                TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+                                              type: string
+                                            optional:
+                                              description: Specify whether the Secret
+                                                or its key must be defined
+                                              type: boolean
+                                          required:
+                                          - key
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                      type: object
+                                  required:
+                                  - name
+                                  type: object
+                                type: array
+                              image:
+                                type: string
+                            type: object
+                          enabled:
+                            type: boolean
+                          labelsToMatch:
+                            items:
+                              properties:
+                                appName:
+                                  type: string
+                                containerSelection:
+                                  type: string
+                                instancePort:
+                                  type: string
+                                instanceType:
+                                  type: string
+                                name:
+                                  type: string
+                                selectedContainerNamesToMatch:
+                                  items:
+                                    type: string
+                                  type: array
+                                tierName:
+                                  type: string
+                                value:
+                                  type: string
+                              type: object
+                            type: array
+                        type: object
+                      dotnetProfiling:
+                        properties:
+                          config:
+                            properties:
+                              egBtmSetLabel:
+                                type: string
+                              env:
+                                items:
+                                  description: EnvVar represents an environment variable
+                                    present in a Container.
+                                  properties:
+                                    name:
+                                      description: Name of the environment variable.
+                                        Must be a C_IDENTIFIER.
+                                      type: string
+                                    value:
+                                      description: |-
+                                        Variable references $(VAR_NAME) are expanded
+                                        using the previously defined environment variables in the container and
+                                        any service environment variables. If a variable cannot be resolved,
+                                        the reference in the input string will be unchanged. Double $$ are reduced
+                                        to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+                                        "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+                                        Escaped references will never be expanded, regardless of whether the variable
+                                        exists or not.
+                                        Defaults to "".
+                                      type: string
+                                    valueFrom:
+                                      description: Source for the environment variable's
+                                        value. Cannot be used if value is not empty.
+                                      properties:
+                                        configMapKeyRef:
+                                          description: Selects a key of a ConfigMap.
+                                          properties:
+                                            key:
+                                              description: The key to select.
+                                              type: string
+                                            name:
+                                              default: ""
+                                              description: |-
+                                                Name of the referent.
+                                                This field is effectively required, but due to backwards compatibility is
+                                                allowed to be empty. Instances of this type with an empty value here are
+                                                almost certainly wrong.
+                                                TODO: Add other useful fields. apiVersion, kind, uid?
+                                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                                TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+                                              type: string
+                                            optional:
+                                              description: Specify whether the ConfigMap
+                                                or its key must be defined
+                                              type: boolean
+                                          required:
+                                          - key
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        fieldRef:
+                                          description: |-
+                                            Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+                                            spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+                                          properties:
+                                            apiVersion:
+                                              description: Version of the schema the
+                                                FieldPath is written in terms of,
+                                                defaults to "v1".
+                                              type: string
+                                            fieldPath:
+                                              description: Path of the field to select
+                                                in the specified API version.
+                                              type: string
+                                          required:
+                                          - fieldPath
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        resourceFieldRef:
+                                          description: |-
+                                            Selects a resource of the container: only resources limits and requests
+                                            (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+                                          properties:
+                                            containerName:
+                                              description: 'Container name: required
+                                                for volumes, optional for env vars'
+                                              type: string
+                                            divisor:
+                                              anyOf:
+                                              - type: integer
+                                              - type: string
+                                              description: Specifies the output format
+                                                of the exposed resources, defaults
+                                                to "1"
+                                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                              x-kubernetes-int-or-string: true
+                                            resource:
+                                              description: 'Required: resource to
+                                                select'
+                                              type: string
+                                          required:
+                                          - resource
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                        secretKeyRef:
+                                          description: Selects a key of a secret in
+                                            the pod's namespace
+                                          properties:
+                                            key:
+                                              description: The key of the secret to
+                                                select from.  Must be a valid secret
+                                                key.
+                                              type: string
+                                            name:
+                                              default: ""
+                                              description: |-
+                                                Name of the referent.
+                                                This field is effectively required, but due to backwards compatibility is
+                                                allowed to be empty. Instances of this type with an empty value here are
+                                                almost certainly wrong.
+                                                TODO: Add other useful fields. apiVersion, kind, uid?
+                                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                                TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+                                              type: string
+                                            optional:
+                                              description: Specify whether the Secret
+                                                or its key must be defined
+                                              type: boolean
+                                          required:
+                                          - key
+                                          type: object
+                                          x-kubernetes-map-type: atomic
+                                      type: object
+                                  required:
+                                  - name
+                                  type: object
+                                type: array
+                              image:
+                                type: string
+                            type: object
+                          enabled:
+                            type: boolean
+                          labelsToMatch:
+                            items:
+                              properties:
+                                appName:
+                                  type: string
+                                containerSelection:
+                                  type: string
+                                instancePort:
+                                  type: string
+                                instanceType:
+                                  type: string
+                                name:
+                                  type: string
+                                selectedContainerNamesToMatch:
+                                  items:
+                                    type: string
+                                  type: array
+                                tierName:
+                                  type: string
+                                value:
+                                  type: string
+                              type: object
+                            type: array
+                        type: object
                       enabled:
                         type: boolean
                       ignoredNamespaces:
                         items:
                           type: string
                         type: array
-                      java:
+                      javaProfiling:
                         properties:
                           config:
                             properties:
@@ -2225,7 +2549,7 @@ spec:
                         items:
                           type: string
                         type: array
-                      nodeJS:
+                      nodejsProfiling:
                         properties:
                           config:
                             properties:
@@ -2417,7 +2741,7 @@ metadata:
     "meta.helm.sh/release-namespace": "egagent"
   labels:
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: universal-agent-operator
+    app.kubernetes.io/name: eginnovations-operator
   name: eginnovations-operator-controller-manager
   namespace: egagent
 ---
@@ -2429,7 +2753,7 @@ metadata:
     "meta.helm.sh/release-namespace": "egagent"
   labels:
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: universal-agent-operator
+    app.kubernetes.io/name: eginnovations-operator
   name: eginnovations-operator-leader-election-role
   namespace: egagent
 rules:
@@ -2464,6 +2788,62 @@ rules:
   verbs:
   - create
   - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    "meta.helm.sh/release-name": "eg-universal-agent-operator"
+    "meta.helm.sh/release-namespace": "egagent"
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: eginnovations-operator
+  name: eginnovations-operator-eguniversalagent-editor-role
+rules:
+- apiGroups:
+  - eginnovations.com
+  resources:
+  - eguniversalagents
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - eginnovations.com
+  resources:
+  - eguniversalagents/status
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    "meta.helm.sh/release-name": "eg-universal-agent-operator"
+    "meta.helm.sh/release-namespace": "egagent"
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: eginnovations-operator
+  name: eginnovations-operator-eguniversalagent-viewer-role
+rules:
+- apiGroups:
+  - eginnovations.com
+  resources:
+  - eguniversalagents
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - eginnovations.com
+  resources:
+  - eguniversalagents/status
+  verbs:
+  - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -2631,26 +3011,7 @@ metadata:
   annotations:
     "meta.helm.sh/release-name": "eg-universal-agent-operator"
     "meta.helm.sh/release-namespace": "egagent"
-  labels:
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: universal-agent-operator
-  name: eginnovations-operator-metrics-reader
-rules:
-- nonResourceURLs:
-  - /metrics
-  verbs:
-  - get
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  annotations:
-    "meta.helm.sh/release-name": "eg-universal-agent-operator"
-    "meta.helm.sh/release-namespace": "egagent"
-  labels:
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: universal-agent-operator
-  name: eginnovations-operator-proxy-role
+  name: eginnovations-operator-metrics-auth-role
 rules:
 - apiGroups:
   - authentication.k8s.io
@@ -2666,6 +3027,19 @@ rules:
   - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    "meta.helm.sh/release-name": "eg-universal-agent-operator"
+    "meta.helm.sh/release-namespace": "egagent"
+  name: eginnovations-operator-metrics-reader
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   annotations:
@@ -2673,7 +3047,7 @@ metadata:
     "meta.helm.sh/release-namespace": "egagent"
   labels:
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: universal-agent-operator
+    app.kubernetes.io/name: eginnovations-operator
   name: eginnovations-operator-leader-election-rolebinding
   namespace: egagent
 roleRef:
@@ -2693,7 +3067,7 @@ metadata:
     "meta.helm.sh/release-namespace": "egagent"
   labels:
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: universal-agent-operator
+    app.kubernetes.io/name: eginnovations-operator
   name: eginnovations-operator-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -2710,73 +3084,48 @@ metadata:
   annotations:
     "meta.helm.sh/release-name": "eg-universal-agent-operator"
     "meta.helm.sh/release-namespace": "egagent"
-  labels:
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: universal-agent-operator
-  name: eginnovations-operator-proxy-rolebinding
+  name: eginnovations-operator-metrics-auth-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: eginnovations-operator-proxy-role
+  name: eginnovations-operator-metrics-auth-role
 subjects:
 - kind: ServiceAccount
   name: eginnovations-operator-controller-manager
   namespace: egagent
 ---
 apiVersion: v1
-data:
-  controller_manager_config.yaml: |
-    apiVersion: controller-runtime.sigs.k8s.io/v1alpha1
-    kind: ControllerManagerConfig
-    health:
-      healthProbeBindAddress: :8081
-    metrics:
-      bindAddress: 127.0.0.1:8080
-    webhook:
-      port: 9443
-    leaderElection:
-      leaderElect: true
-      resourceName: 053a5393.eginnovations.com
-kind: ConfigMap
-metadata:
-  annotations:
-    "meta.helm.sh/release-name": "eg-universal-agent-operator"
-    "meta.helm.sh/release-namespace": "egagent"
-  name: eginnovations-operator-manager-config
-  namespace: egagent
----
-apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    "meta.helm.sh/release-name": "eg-universal-agent-operator"
-    "meta.helm.sh/release-namespace": "egagent"
   labels:
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: universal-agent-operator
+    app.kubernetes.io/name: eginnovations-operator
     control-plane: controller-manager
   name: eginnovations-operator-controller-manager-metrics-service
   namespace: egagent
+  annotations:
+    "meta.helm.sh/release-name": "eg-universal-agent-operator"
+    "meta.helm.sh/release-namespace": "egagent"
 spec:
   ports:
   - name: https
     port: 8443
     protocol: TCP
-    targetPort: https
+    targetPort: 8443
   selector:
     control-plane: controller-manager
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    "meta.helm.sh/release-name": "eg-universal-agent-operator"
-    "meta.helm.sh/release-namespace": "egagent"
   labels:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: eginnovations-operator
   name: eginnovations-operator-webhook-service
   namespace: egagent
+  annotations:
+    "meta.helm.sh/release-name": "eg-universal-agent-operator"
+    "meta.helm.sh/release-namespace": "egagent"  
 spec:
   ports:
   - port: 443
@@ -2796,7 +3145,7 @@ metadata:
     app.kubernetes.io/created-by: eginnovations-operator
     app.kubernetes.io/instance: controller-manager
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: deployment
+    app.kubernetes.io/name: eginnovations-operator
     app.kubernetes.io/part-of: eginnovations-operator
     control-plane: controller-manager
   name: eginnovations-operator-controller-manager
@@ -2815,9 +3164,9 @@ spec:
     spec:
       containers:
       - args:
-        - --health-probe-bind-address=:8081
-        - --metrics-bind-address=127.0.0.1:8080
+        - --metrics-bind-address=:8443
         - --leader-elect
+        - --health-probe-bind-address=:8081
         command:
         - /manager
         image: "{{ .Values.imageOperator.registry }}/{{ .Values.imageOperator.repository }}:{{ .Values.imageOperator.tag }}"
@@ -2855,30 +3204,6 @@ spec:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
           readOnly: true
-      - args:
-        - --secure-listen-address=0.0.0.0:8443
-        - --upstream=http://127.0.0.1:8080/
-        - --logtostderr=true
-        - --v=0
-        image: "{{ .Values.imageProxy.registry }}/{{ .Values.imageProxy.repository }}:{{ .Values.imageProxy.tag }}"
-        imagePullPolicy: {{ .Values.imageProxy.pullPolicy }}
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources:
-          limits:
-            cpu: 500m
-            memory: 128Mi
-          requests:
-            cpu: 5m
-            memory: 64Mi
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
       securityContext:
         runAsNonRoot: true
       serviceAccountName: eginnovations-operator-controller-manager
