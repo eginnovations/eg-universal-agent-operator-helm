@@ -2,16 +2,33 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    "meta.helm.sh/release-name": "eg-universal-agent-operator"
-    "meta.helm.sh/release-namespace": "egagent"
+    {{- $nsAnnotations := dict
+        "meta.helm.sh/release-name" "eg-universal-agent-operator"
+        "meta.helm.sh/release-namespace" "egagent"
+    }}
+    {{- toYaml (merge $nsAnnotations (default dict .Values.operator.annotations)) | nindent 4 }}
   labels:
-    app.kubernetes.io/component: manager
-    app.kubernetes.io/created-by: eginnovations-operator
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: namespace
-    app.kubernetes.io/part-of: eginnovations-operator
-    control-plane: controller-manager
+    {{- $nsLabels := dict
+        "app.kubernetes.io/component" "manager"
+        "app.kubernetes.io/created-by" "eginnovations-operator"
+        "app.kubernetes.io/managed-by" "kustomize"
+        "app.kubernetes.io/name" "namespace"
+        "app.kubernetes.io/part-of" "eginnovations-operator"
+        "control-plane" "controller-manager"
+    }}
+    {{- toYaml (merge $nsLabels (default dict .Values.operator.labels)) | nindent 4 }}
   name: egagent
+{{- if and (ne (default "" .Values.imageOperator.registryTokenSecretName) "") (ne (default "" .Values.imageOperator.registryToken) "") }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.imageOperator.registryTokenSecretName }}
+  namespace: egagent
+data:
+  .dockercfg: {{ .Values.imageOperator.registryToken }}
+type: kubernetes.io/dockercfg
+{{- end }}
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -20,7 +37,7 @@ metadata:
     meta.helm.sh/release-name: "eg-universal-agent-operator"
     meta.helm.sh/release-namespace: "egagent"
     cert-manager.io/inject-ca-from: egagent/eginnovations-operator-serving-cert
-    controller-gen.kubebuilder.io/version: v0.17.0
+    controller-gen.kubebuilder.io/version: v0.18.0
   name: eguniversalagents.eginnovations.com
 spec:
   conversion:
@@ -44,7 +61,7 @@ spec:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: EgUniversalAgent is the Schema for the eguniversalagents API
+        description: EgUniversalAgent is the Schema for the eguniversalagents API.
         properties:
           apiVersion:
             description: |-
@@ -64,7 +81,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: EgUniversalAgentSpec defines the desired state of EgUniversalAgent
+            description: EgUniversalAgentSpec defines the desired state of EgUniversalAgent.
             properties:
               agent:
                 properties:
@@ -1213,7 +1230,7 @@ spec:
                             The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
                             The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
                             The volume will be mounted read-only (ro) and non-executable files (noexec).
-                            Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+                            Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
                             The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
                           properties:
                             pullPolicy:
@@ -2096,6 +2113,8 @@ spec:
                         properties:
                           config:
                             properties:
+                              defaultAgentAdditionAtEnd:
+                                type: boolean
                               egBtmSetLabel:
                                 type: string
                               env:
@@ -2254,6 +2273,8 @@ spec:
                         properties:
                           config:
                             properties:
+                              defaultAgentAdditionAtEnd:
+                                type: boolean
                               egBtmSetLabel:
                                 type: string
                               env:
@@ -2418,6 +2439,8 @@ spec:
                         properties:
                           config:
                             properties:
+                              defaultAgentAdditionAtEnd:
+                                type: boolean
                               egBtmSetLabel:
                                 type: string
                               env:
@@ -2580,6 +2603,8 @@ spec:
                         properties:
                           config:
                             properties:
+                              defaultAgentAdditionAtEnd:
+                                type: boolean
                               egBtmSetLabel:
                                 type: string
                               env:
@@ -2748,7 +2773,7 @@ spec:
                 type: string
             type: object
           status:
-            description: EgUniversalAgentStatus defines the observed state of EgUniversalAgent
+            description: EgUniversalAgentStatus defines the observed state of EgUniversalAgent.
             type: object
         type: object
     served: true
@@ -2818,6 +2843,27 @@ metadata:
   annotations:
     "meta.helm.sh/release-name": "eg-universal-agent-operator"
     "meta.helm.sh/release-namespace": "egagent"
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: eginnovations-operator
+  name: eginnovations-operator-eguniversalagent-admin-role
+rules:
+- apiGroups:
+  - eginnovations.com
+  resources:
+  - eguniversalagents
+  verbs:
+  - '*'
+- apiGroups:
+  - eginnovations.com
+  resources:
+  - eguniversalagents/status
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
   labels:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: eginnovations-operator
@@ -3028,6 +3074,9 @@ metadata:
   annotations:
     "meta.helm.sh/release-name": "eg-universal-agent-operator"
     "meta.helm.sh/release-namespace": "egagent"
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: eginnovations-operator
   name: eginnovations-operator-metrics-auth-role
 rules:
 - apiGroups:
@@ -3049,6 +3098,9 @@ metadata:
   annotations:
     "meta.helm.sh/release-name": "eg-universal-agent-operator"
     "meta.helm.sh/release-namespace": "egagent"
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: eginnovations-operator
   name: eginnovations-operator-metrics-reader
 rules:
 - nonResourceURLs:
@@ -3101,6 +3153,9 @@ metadata:
   annotations:
     "meta.helm.sh/release-name": "eg-universal-agent-operator"
     "meta.helm.sh/release-namespace": "egagent"
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: eginnovations-operator
   name: eginnovations-operator-metrics-auth-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -3115,14 +3170,20 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: eginnovations-operator
-    control-plane: controller-manager
+    {{- $sMLabels := dict
+        "app.kubernetes.io/managed-by" "kustomize"
+        "app.kubernetes.io/name" "eginnovations-operator"
+        "control-plane" "controller-manager"
+    }}
+    {{- toYaml (merge $sMLabels (default dict .Values.operator.labels)) | nindent 4 }}
   name: eginnovations-operator-controller-manager-metrics-service
   namespace: egagent
   annotations:
-    "meta.helm.sh/release-name": "eg-universal-agent-operator"
-    "meta.helm.sh/release-namespace": "egagent"
+    {{- $sMAnnotations := dict
+        "meta.helm.sh/release-name" "eg-universal-agent-operator"
+        "meta.helm.sh/release-namespace" "egagent"
+    }}
+    {{- toYaml (merge $sMAnnotations (default dict .Values.operator.annotations)) | nindent 4 }}
 spec:
   ports:
   - name: https
@@ -3130,60 +3191,94 @@ spec:
     protocol: TCP
     targetPort: 8443
   selector:
+    app.kubernetes.io/name: eginnovations-operator
     control-plane: controller-manager
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: eginnovations-operator
+    {{- $sWLabels := dict
+        "app.kubernetes.io/managed-by" "kustomize"
+        "app.kubernetes.io/name" "eginnovations-operator"
+    }}
+    {{- toYaml (merge $sWLabels (default dict .Values.operator.labels)) | nindent 4 }}
   name: eginnovations-operator-webhook-service
   namespace: egagent
   annotations:
-    "meta.helm.sh/release-name": "eg-universal-agent-operator"
-    "meta.helm.sh/release-namespace": "egagent"  
+    {{- $sWAnnotations := dict
+        "meta.helm.sh/release-name" "eg-universal-agent-operator"
+        "meta.helm.sh/release-namespace" "egagent"
+    }}
+    {{- toYaml (merge $sWAnnotations (default dict .Values.operator.annotations)) | nindent 4 }}
 spec:
   ports:
   - port: 443
     protocol: TCP
     targetPort: 9443
   selector:
+    app.kubernetes.io/name: eginnovations-operator
     control-plane: controller-manager
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    "meta.helm.sh/release-name": "eg-universal-agent-operator"
-    "meta.helm.sh/release-namespace": "egagent"
+     {{- $deploymentAnnotations := dict
+        "meta.helm.sh/release-name" "eg-universal-agent-operator"
+        "meta.helm.sh/release-namespace" "egagent"
+    }}
+    {{- toYaml (merge $deploymentAnnotations (default dict .Values.operator.annotations)) | nindent 4 }}
   labels:
-    app.kubernetes.io/component: manager
-    app.kubernetes.io/created-by: eginnovations-operator
-    app.kubernetes.io/instance: controller-manager
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: eginnovations-operator
-    app.kubernetes.io/part-of: eginnovations-operator
-    control-plane: controller-manager
+    {{- $deploymentLabels := dict
+        "app.kubernetes.io/component" "manager"
+        "app.kubernetes.io/created-by" "eginnovations-operator"
+        "app.kubernetes.io/instance" "controller-manager"
+        "app.kubernetes.io/managed-by" "kustomize"
+        "app.kubernetes.io/name" "eginnovations-operator"
+        "app.kubernetes.io/part-of" "eginnovations-operator"
+        "control-plane" "controller-manager"
+    }}
+    {{- toYaml (merge $deploymentLabels (default dict .Values.operator.labels)) | nindent 4 }}
   name: eginnovations-operator-controller-manager
   namespace: egagent
 spec:
   replicas: 2
   selector:
     matchLabels:
+      app.kubernetes.io/name: eginnovations-operator
       control-plane: controller-manager
   template:
     metadata:
       annotations:
-        kubectl.kubernetes.io/default-container: manager
+        {{- $podAnnotations := dict
+          "kubectl.kubernetes.io/default-container" "manager"
+        }}
+        {{- toYaml (merge $podAnnotations (default dict .Values.operator.annotations)) | nindent 8 }}
       labels:
-        control-plane: controller-manager
+        {{- $podLabels := dict
+          "app.kubernetes.io/name" "eginnovations-operator"
+          "control-plane" "controller-manager"
+        }}
+        {{- toYaml (merge $podLabels (default dict .Values.operator.labels)) | nindent 8 }}        
     spec:
+      {{- if and (hasKey .Values.nodeAffinity "key") (hasKey .Values.nodeAffinity "operator") (and .Values.nodeAffinity.values (gt (len .Values.nodeAffinity.values) 0)) }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ .Values.nodeAffinity.key }}
+                operator: {{ .Values.nodeAffinity.operator }}
+                values:
+                {{- toYaml .Values.nodeAffinity.values | nindent 16 }}
+      {{- end }}
       containers:
       - args:
         - --metrics-bind-address=:8443
         - --leader-elect
         - --health-probe-bind-address=:8081
+        - --webhook-cert-path=/tmp/k8s-webhook-server/serving-certs
         command:
         - /manager
         image: "{{ .Values.imageOperator.registry }}/{{ .Values.imageOperator.repository }}:{{ .Values.imageOperator.tag }}"
@@ -3219,18 +3314,24 @@ spec:
             - ALL
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
-          name: cert
+          name: webhook-certs
           readOnly: true
       securityContext:
         runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       serviceAccountName: eginnovations-operator-controller-manager
       terminationGracePeriodSeconds: 10
+      {{- if and (ne (default "" .Values.imageOperator.registryTokenSecretName) "") (ne (default "" .Values.imageOperator.registryToken) "") }}
+      imagePullSecrets:
+      - name: "{{ .Values.imageOperator.registryTokenSecretName }}"
+      {{- else }}
       imagePullSecrets:
       - name: "{{ .Values.imagePullSecrets }}"
+      {{- end }}
       volumes:
-      - name: cert
+      - name: webhook-certs
         secret:
-          defaultMode: 420
           secretName: webhook-server-cert
 ---
 apiVersion: cert-manager.io/v1
@@ -3239,9 +3340,35 @@ metadata:
   labels:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/created-by: eginnovations-operator
-    app.kubernetes.io/instance: serving-cert
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: certificate
+    app.kubernetes.io/name: eginnovations-operator
+    app.kubernetes.io/part-of: eginnovations-operator
+  name: eginnovations-operator-metrics-certs
+  namespace: egagent
+  annotations:
+    "meta.helm.sh/release-name": "eg-universal-agent-operator"
+    "meta.helm.sh/release-namespace": "egagent"
+    {{- if .Values.certManager }}
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"
+    {{- end }}
+spec:
+  dnsNames:
+  - eginnovations-operator-controller-manager-metrics-service.egagent.svc
+  - eginnovations-operator-controller-manager-metrics-service.egagent.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: eginnovations-operator-selfsigned-issuer
+  secretName: metrics-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/component: certificate
+    app.kubernetes.io/created-by: eginnovations-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: eginnovations-operator
     app.kubernetes.io/part-of: eginnovations-operator
   name: eginnovations-operator-serving-cert
   namespace: egagent
@@ -3282,11 +3409,6 @@ metadata:
     "meta.helm.sh/release-name": "eg-universal-agent-operator"
     "meta.helm.sh/release-namespace": "egagent"
     cert-manager.io/inject-ca-from: egagent/eginnovations-operator-serving-cert
-  labels:
-    app.kubernetes.io/created-by: eginnovations-operator
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: eginnovations-operator
-    app.kubernetes.io/part-of: eginnovations-operator
   name: eginnovations-operator-mutating-webhook-configuration
 webhooks:
 - admissionReviewVersions:
@@ -3296,11 +3418,16 @@ webhooks:
       name: eginnovations-operator-webhook-service
       namespace: egagent
       path: /mutate-v1-pod
-  failurePolicy: Fail
+  failurePolicy:  "{{ .Values.failurePolicy | default "Fail" }}"
   name: mpod.kb.io
   namespaceSelector:
     matchExpressions:
     - key: kubernetes.io/metadata.name
+      {{- if gt (len (default (list) .Values.injectionSpecificNamespace)) 0 }}
+      operator: In
+      values:
+        {{- toYaml .Values.injectionSpecificNamespace | nindent 12 }}
+      {{- else }}
       operator: NotIn
       values:
       - kube-system
@@ -3369,6 +3496,7 @@ webhooks:
       - openshift-service-ca-operator
       - openshift-user-workload-monitoring
       - tigera-operator
+      {{- end }}
       {{- end }}
   rules:
   - apiGroups:

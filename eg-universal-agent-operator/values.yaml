@@ -4,13 +4,28 @@
 
 imageOperator:
   registry: docker.io
+  registryTokenSecretName:
+  registryToken:
   repository: eginnovations/universal-agent-operator
   pullPolicy: IfNotPresent
-  tag: "0.0.10"
+  tag: "0.0.11"
 
 clusterType:
 
+nodeAffinity:
+  key:
+  operator:
+  values: []
+
+operator:
+  annotations: {}
+  labels: {}
+
 imagePullSecrets: []
+
+failurePolicy:
+
+injectionSpecificNamespace: []
 
 certManager: false
 
