@@ -33,5 +33,5 @@ entries:
     - https://eginnovations.github.io/eg-universal-agent-operator-helm
     type: application
     urls:
-    - eg-universal-agent-operator-0.0.5.tgz
+    - https://eginnovations.github.io/eg-universal-agent-operator-helm/repos/stable/eg-universal-agent-operator-0.0.5.tgz
     version: 0.0.5
